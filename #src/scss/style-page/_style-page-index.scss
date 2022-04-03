@@ -1,0 +1,24 @@
+.gall-image {
+
+    &__wrap {
+        padding: 100px 0;
+    }
+
+    &__list {
+        display: grid;
+        gap: 20px;
+        align-items: start;
+    }
+}
+
+.card-gall-image {
+    display: flex;
+    &__img {
+        margin-right: 20px;
+        & img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+    }
+}

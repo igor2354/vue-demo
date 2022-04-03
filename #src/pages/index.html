@@ -1,0 +1,19 @@
+
+  @@include("../components/_header.html") 
+
+  <section class="gall-image">
+    <div class="container">
+      <div class="gall-image__wrap">
+        <div class="gall-image__list">
+          <image-item
+            v-for="item in listSrc"
+            v-bind:image = "item"
+            v-bind:key = "item.id"
+            v-on:delete-image = "deleteImageItem"
+          ></image-item>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  @@include("../components/_footer.html")
