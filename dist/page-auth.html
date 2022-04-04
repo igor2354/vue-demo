@@ -19,13 +19,11 @@
 
 
 <section class="auth">
-    <div class="auth__wrap">
+	<div class="auth__wrap">
+		<switch-button v-if="!enabledAccess" v-on:switch-comp="switchCompClick"></switch-button>
 
-        <switch-button v-if="!enabledAccess" v-on:switch-comp="switchCompClick"></switch-button>
-
-        <component v-if="currentForm" :is="currentForm"></component>
-
-    </div>
+		<component v-if="currentForm" :is="currentForm"></component>
+	</div>
 </section>
 
 <!-- FOOTER -->

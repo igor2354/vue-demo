@@ -136,10 +136,10 @@ const formAuth = Vue.createApp({
 			if (user) {
 				console.log(user);
 				this.enabledAccess = true;
-				this.currentForm = this.enabledAccess ? "sign-enabled" : "sign-in";
+				this.currentForm = "sign-enabled";
 			} else {
 				this.enabledAccess = false;
-				this.currentForm = this.enabledAccess ? "sign-enabled" : "sign-in";
+				this.currentForm = "sign-in";
 			}
 		});
 	},
