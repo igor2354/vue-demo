@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="./css/style.css" />
+		<title>Document</title>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<!-- HEADER -->
+
+			<header class="header">
+				<div class="container"></div>
+			</header>
+
+			<!-- // HEADER -->
+
+
+<section class="auth">
+    <div class="auth__wrap">
+
+        <switch-button v-if="!enabledAccess" v-on:switch-comp="switchCompClick"></switch-button>
+
+        <component v-if="currentForm" :is="currentForm"></component>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+
+<footer class="footer">
+  <div class="container"></div>
+</footer>
+
+<!-- // FOOTER -->
+
+</div>
+
+
+<script src="https://unpkg.com/vue@next"></script>
+
+<script src="./js/script.js" type="module"></script>
+
+<script src="./js/comp-image.js" type="module"></script>
+
+<script src="./js/form-auth.js" type="module"></script>
+
+</body>
+
+</html>
