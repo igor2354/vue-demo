@@ -1,45 +1,71 @@
-import { getStorage, ref, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
+import { getStorage, ref, getDownloadURL, listAll, deleteObject, uploadBytes } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
 
 const storage = getStorage();
 
-const imageRef = ref(storage, '');
-
 const app = Vue.createApp({
-    data() {
-        return {
-            listSrc: []
-        }
-    },
+	data() {
+		return {
+			upImage: null,
+			notImage: false,
+			imageAlready: false,
+			listSrc: [],
+		};
+	},
 
-    methods: {
-        deleteImageItem(n) {
-            console.log(this.listSrc.indexOf(this.listSrc[n]));
-            this.listSrc.splice(this.listSrc.indexOf(this.listSrc[n]), this.listSrc.indexOf(this.listSrc[n]))
+	methods: {
+		deleteImageItem(n) {
+			let indexEl = this.listSrc.findIndex((item) => item.id == n);
+			let targetEl = this.listSrc.find((item) => item.id == n);
 
-            console.log(this.listSrc);
+			deleteObject(ref(storage, targetEl.baseRef)).then(() => {
+				this.listSrc.splice(indexEl, 1);
+			});
+		},
 
-            // deleteObject(ref(storage, this.listSrc[n].baseRef)).then(() => {
-            //     this.listSrc.filter(item => item.id != n);
-            // })
-        }
-    },
+		addImage() {
+			listAll(ref(storage, "")).then((res) => {
+				res.items.forEach((itemRef, index) => {
+					getDownloadURL(ref(storage, itemRef)).then((url) => {
+						if (this.listSrc.find((item) => item.baseRef == itemRef.fullPath) == undefined) {
+							this.listSrc.push({ id: new Date().getMilliseconds(), src: url, baseRef: itemRef.fullPath });
+						} else {
+							this.imageAlready = true;
+							setTimeout(() => {
+								this.imageAlready = false;
+							}, 3000);
+						}
+					});
+				});
+			});
+		},
 
-    created() {
-        listAll(imageRef)
-        .then((res) => {
-            res.items.forEach((itemRef, index) => {
-                getDownloadURL(ref(storage, itemRef)).then((url) => {
-                    this.listSrc.push({id: index, src: url, baseRef: itemRef.fullPath})
-                })
-            });
-        })
-    }
-})
+		previewFiles(event) {
+			this.upImage = event.target.files[0];
+			this.notImage = false;
+		},
 
-app.component('image-item', {
-    props: ["image"],
+		addFileStore() {
+			let file = this.upImage;
 
-    template: `
+			if (file != null) {
+				uploadBytes(ref(storage, file.name), file).then(() => {
+					this.addImage();
+				});
+			} else {
+				this.notImage = true;
+			}
+		},
+	},
+
+	created() {
+		this.addImage();
+	},
+});
+
+app.component("image-item", {
+	props: ["image"],
+
+	template: `
         <div class="card-gall-image">
             <div class="card-gall-image__img">
                 <img :src="image.src">
@@ -61,7 +87,7 @@ app.component('image-item', {
                 </svg>
             </div>
         </div>
-    `
-})
+    `,
+});
 
 app.mount(".gall-image");

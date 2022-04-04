@@ -1,19 +1,24 @@
+@@include("../components/_header.html")
 
-  @@include("../components/_header.html") 
-
-  <section class="gall-image">
-    <div class="container">
-      <div class="gall-image__wrap">
-        <div class="gall-image__list">
-          <image-item
-            v-for="item in listSrc"
-            v-bind:image = "item"
-            v-bind:key = "item.id"
-            v-on:delete-image = "deleteImageItem"
-          ></image-item>
-        </div>
+<section class="gall-image">
+  <div class="container">
+    <div class="gall-image__wrap">
+      <div class="gall-image__list">
+        <image-item v-for="item in listSrc" v-bind:image="item" v-bind:key="item.id"
+          v-on:delete-image="deleteImageItem"></image-item>
       </div>
+
+      <div class="gall-image__add-image">
+        <input type="file" class="gall-image__add-image-input" v-on:change="previewFiles">
+        <button type="button" class="gall-image__add-image-btn" v-on:click="addFileStore">Добавить изображение</button>
+      </div>
+
+      <div class="gall-image__err" v-if="notImage">Вы не добавили изображение</div>
+
+      <div class="gall-image__err" v-if="imageAlready ">Такое изображение уже есть</div>
+
     </div>
-  </section>
-  
-  @@include("../components/_footer.html")
+  </div>
+</section>
+
+@@include("../components/_footer.html")
