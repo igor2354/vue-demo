@@ -1,11 +1,12 @@
 import { auth } from "./script.js";
-import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 
 const signIn = {
 	data() {
 		return {
 			login: null,
 			pass: null,
+			err: false,
 		};
 	},
 
@@ -20,8 +21,7 @@ const signIn = {
 					this.enabledAccess = true;
 				})
 				.catch((error) => {
-					const errorCode = error.code;
-					const errorMessage = error.message;
+					this.err = true;
 				});
 		},
 	},
@@ -33,13 +33,15 @@ const signIn = {
             <div class="auth-from__list">
                 <div class="auth-from__item wrap-input">
                     <div class="wrap-input__name">login</div>
-                    <input type="text" class="wrap-input__input" v-model="login">
+                    <input type="text" class="wrap-input__input" v-model="login" v-bind:class="{'error': err}" v-on:input="err = false">
                 </div>
 
                 <div class="auth-from__item wrap-input">
                     <div class="wrap-input__name">password</div>
-                    <input type="password" class="wrap-input__input" v-model="pass">
+                    <input type="password" class="wrap-input__input" v-model="pass" v-bind:class="{'error': err}" v-on:input="err = false">
                 </div>
+
+                <div class="auth-from__err" v-if="err">Неверный логин или пароль</div>
             </div>
 
             <button type="submit" class="auth-from__btn">Отправить</button>
@@ -53,6 +55,8 @@ const signUp = {
 			login: null,
 			pass: null,
 			passConfirm: null,
+			errLogin: false,
+			errPass: false,
 		};
 	},
 
@@ -69,6 +73,14 @@ const signUp = {
 							const errorMessage = error.message;
 						});
 				});
+			} else {
+				if (this.login === null) {
+					this.errLogin = true;
+				}
+
+				if (this.pass !== this.passConfirm || this.pass == null || this.passConfirm == null) {
+					this.errPass = true;
+				}
 			}
 		},
 	},
@@ -80,18 +92,22 @@ const signUp = {
             <div class="auth-from__list">
                 <div class="auth-from__item wrap-input">
                     <div class="wrap-input__name">login</div>
-                    <input type="text" class="wrap-input__input" v-model="login">
+                    <input type="text" class="wrap-input__input" v-model="login" v-bind:class="{'error': errLogin}" v-on:input="errLogin = false">
                 </div>
+
+                <div class="auth-from__err" v-if="errLogin">Слишком короткий логин</div>
 
                 <div class="auth-from__item wrap-input">
                     <div class="wrap-input__name">password</div>
-                    <input type="password" class="wrap-input__input" v-model="pass">
+                    <input type="password" class="wrap-input__input" v-model="pass" v-bind:class="{'error': errPass}" v-on:input="errPass = false">
                 </div>
 
                 <div class="auth-from__item wrap-input">
                     <div class="wrap-input__name">password confirm</div>
-                    <input type="password" class="wrap-input__input" v-model="passConfirm">
+                    <input type="password" class="wrap-input__input" v-model="passConfirm" v-bind:class="{'error': errPass}" v-on:input="errPass = false">
                 </div>
+
+                <div class="auth-from__err" v-if="errPass">Пароли не совпадают</div>
             </div>
 
             <button type="submit" class="auth-from__btn">Отправить</button>
@@ -117,6 +133,12 @@ const switchButton = {
     `,
 };
 
+const signOutComp = {
+	template: `
+        <div class="auth__sign-out" v-on:click="$emit('sign-out-emit')">Выйти</div>
+    `,
+};
+
 const formAuth = Vue.createApp({
 	data() {
 		return {
@@ -128,6 +150,16 @@ const formAuth = Vue.createApp({
 	methods: {
 		switchCompClick(name) {
 			this.currentForm = name;
+		},
+
+		signOutUser() {
+			signOut(auth)
+				.then(() => {
+					this.enabledAccess = false;
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 	},
 
@@ -149,6 +181,7 @@ const formAuth = Vue.createApp({
 		"sign-up": signUp,
 		"sign-enabled": signEnabled,
 		"switch-button": switchButton,
+		"sign-out-comp": signOutComp,
 	},
 });
 

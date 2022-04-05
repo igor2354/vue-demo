@@ -254,6 +254,11 @@ body.lock {
     background: #4c4cbe;
     color: #fff; }
 
+.auth-from__err {
+  color: red;
+  font-size: 12px;
+  margin-bottom: 20px; }
+
 .wrap-input__name {
   margin-bottom: 10px; }
 
@@ -262,3 +267,5 @@ body.lock {
   padding: 10px;
   border: 1px solid #4c4cbe;
   border-radius: 10px; }
+  .wrap-input__input.error {
+    border-color: red; }
